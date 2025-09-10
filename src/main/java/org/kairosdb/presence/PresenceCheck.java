@@ -9,6 +9,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.kairosdb.core.scheduler.KairosDBJob;
 import org.kairosdb.eventbus.Subscribe;
 import org.kairosdb.events.DataPointEvent;
+import org.kairosdb.metrics4j.MetricSourceManager;
 import org.quartz.*;
 
 import javax.inject.Inject;
@@ -23,6 +24,8 @@ import static org.quartz.TriggerBuilder.newTrigger;
  */
 public class PresenceCheck implements KairosDBJob
 {
+	public static final PresenceStats stats = MetricSourceManager.getSource(PresenceStats.class);
+
 	public static final String METRIC_NAME_CONFIG = "kairosdb.presence.metric";
 	public static final String TAG_NAME_CONFIG = "kairosdb.presence.tag";
 	public static final String VALUES_CONFIG = "kairosdb.presence.values";
@@ -78,6 +81,7 @@ public class PresenceCheck implements KairosDBJob
 				synchronized (m_mapLock) {
 					m_presenceMap.compute(presenceValue, (s, stopwatch) -> {
 						if (stopwatch == null) {
+							stats.home(presenceValue);
 							sendUpdate(presenceValue, "HOME");
 							return Stopwatch.createStarted();
 						}
@@ -125,7 +129,9 @@ public class PresenceCheck implements KairosDBJob
 		}
 
 		for (String value : awayList) {
+			stats.away(value);
 			sendUpdate(value, "AWAY");
+
 		}
 	}
 
