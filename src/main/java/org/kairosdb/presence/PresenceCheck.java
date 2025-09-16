@@ -81,7 +81,7 @@ public class PresenceCheck implements KairosDBJob
 				synchronized (m_mapLock) {
 					m_presenceMap.compute(presenceValue, (s, stopwatch) -> {
 						if (stopwatch == null) {
-							stats.home(presenceValue);
+							stats.home(presenceValue).put(1);
 							sendUpdate(presenceValue, "HOME");
 							return Stopwatch.createStarted();
 						}
@@ -129,9 +129,8 @@ public class PresenceCheck implements KairosDBJob
 		}
 
 		for (String value : awayList) {
-			stats.away(value);
+			stats.away(value).put(1);
 			sendUpdate(value, "AWAY");
-
 		}
 	}
 
