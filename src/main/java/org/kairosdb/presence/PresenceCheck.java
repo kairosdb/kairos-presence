@@ -1,6 +1,8 @@
 package org.kairosdb.presence;
 
 import com.google.common.base.Stopwatch;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -12,8 +14,6 @@ import org.kairosdb.events.DataPointEvent;
 import org.kairosdb.metrics4j.MetricSourceManager;
 import org.quartz.*;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
